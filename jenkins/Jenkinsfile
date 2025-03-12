@@ -4,14 +4,6 @@ pipeline {
     tools {
         maven '3.9.2'
     }
-    stages {
-        stage("Tools initialization") {
-            steps {
- 
-                sh "mvn --version"
-                sh "java -version"
-            }
-        }
 
     environment {
         EC2_USER = 'ubuntu'
@@ -20,6 +12,13 @@ pipeline {
     }
 
     stages {
+        stage("Tools initialization") {
+            steps {
+                sh "mvn --version"
+                sh "java -version"
+            }
+        }
+
         stage('Clone Repository') {
             steps {
                 git branch: 'main', url: 'https://github.com/mohanakrishna732/java-maven.git'
@@ -35,16 +34,17 @@ pipeline {
         stage('Test') {
             steps {
                 sh 'mvn test'
-
-         stage('Artifacts') {
-            steps {
-                sh 'mvn clean package'
-            }       
             }
             post {
                 always {
                     junit 'target/surefire-reports/*.xml'
                 }
+            }
+        }
+
+        stage('Artifacts') {
+            steps {
+                sh 'mvn clean package'
             }
         }
 
@@ -55,5 +55,4 @@ pipeline {
             }
         }
     }
-}
 }
