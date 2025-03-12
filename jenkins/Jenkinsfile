@@ -7,8 +7,8 @@ pipeline {
 
     environment {
         EC2_USER = 'ubuntu'
-        EC2_HOST = 'your-ec2-public-ip'
-        SSH_KEY = '/path/to/your-key.pem'
+        EC2_HOST = '35.181.167.228'
+        SSH_KEY = '/home/ubuntu/server.pem'
     }
 
     stages {
@@ -50,8 +50,8 @@ pipeline {
 
         stage('Deliver') {
             steps {
-                sh 'scp -i $SSH_KEY target/*.jar $EC2_USER@$EC2_HOST:/home/ubuntu/app.jar'
-                sh 'ssh -i $SSH_KEY $EC2_USER@$EC2_HOST "nohup java -jar /home/ubuntu/app.jar > /home/ubuntu/app.log 2>&1 &"'
+                sh 'scp -i $SSH_KEY /var/lib/jenkins/workspace/new-job1/target/*.jar $EC2_USER@$EC2_HOST:/opt/tomcat/webapps/manager/app.jar'
+                sh 'ssh -i $SSH_KEY $EC2_USER@$EC2_HOST "nohup java -jar /opt/tomcat/webapps/manager/app.jar > /home/ubuntu/app.log 2>&1 &"'
             }
         }
     }
