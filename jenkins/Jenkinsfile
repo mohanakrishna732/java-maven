@@ -50,9 +50,11 @@ pipeline {
 
         stage('Deliver') {
             steps {
-                sh 'scp -i $SSH_KEY /var/lib/jenkins/workspace/new-job1/target/*.jar $EC2_USER@$EC2_HOST:/opt/tomcat/webapps/manager/app.jar'
+                sh 'scp -i $SSH_KEY /var/lib/jenkins/workspace/new-job1/target/*.jar $EC2_USER@$EC2_HOST:/tmp/app.jar'
+                sh 'ssh -i $SSH_KEY $EC2_USER@$EC2_HOST "sudo mv /tmp/app.jar /opt/tomcat/webapps/manager/app.jar && sudo chown tomcat:tomcat /opt/tomcat/webapps/manager/app.jar"'
                 sh 'ssh -i $SSH_KEY $EC2_USER@$EC2_HOST "nohup java -jar /opt/tomcat/webapps/manager/app.jar > /home/ubuntu/app.log 2>&1 &"'
             }
         }
+
     }
 }
